@@ -19,6 +19,7 @@ class Viewer(object):
         gains_hours,
         in_giveaways,
         last_seen,
+        sub,
         entrance_message,
         entrance_message_type,
         entrance_sfx
@@ -38,6 +39,7 @@ class Viewer(object):
         self.gains_hours = gains_hours
         self.in_giveaways = in_giveaways
         self.last_seen = last_seen
+        self.sub = sub
         self.entrance_message = entrance_message
         self.entrance_message_type = entrance_message_type
         self.entrance_sfx = entrance_sfx
@@ -56,7 +58,7 @@ class Viewer(object):
 
 class DaveDraw(object):
     def __init__(self):
-        self.debug = False
+        self.debug = True
         self.database_path = 'Viewers3DB.sqlite'
         self.db_conn = sqlite3.connect(self.database_path)
         self.get_viewers()
@@ -183,7 +185,28 @@ class DaveDraw(object):
         """
         c = self.db_conn.cursor()
         viewers = c.execute('''
-                SELECT * FROM Viewer
+                SELECT
+
+                viewer_id,
+                TwitchName,
+                BeamName,
+                BeamID,
+                Type,
+                Rank,
+                Points,
+                Points2,
+                Hours,
+                Raids,
+                GainsCurrency,
+                GainsHours,
+                InGiveaways,
+                LastSeen,
+                Sub,
+                EntranceMessage,
+                EntranceMsgType,
+                EntranceSFX
+
+                FROM Viewer
                 WHERE Type != 1
                 AND TwitchName NOT IN (
                     \'treeboydave\',
@@ -206,6 +229,7 @@ class DaveDraw(object):
                         cur_viewer[7],
                         cur_viewer[8],
                         cur_viewer[9],
+                        cur_viewer[10],
                         cur_viewer[11],
                         cur_viewer[12],
                         cur_viewer[13],
