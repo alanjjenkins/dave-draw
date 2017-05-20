@@ -118,6 +118,18 @@ class DaveDraw(object):
             )
         )
 
+    def calculate_total_points(self):
+        """
+        Gets the total amount of points awarded to all
+        viewers.
+        """
+
+        self.total_points = 0
+        for viewer in self.viewers:
+            self.total_points += viwer.points2
+
+        print("Total points awarded: %s" % self.total_points)
+
 if __name__ == '__main__':
     dd = DaveDraw()
     dd.get_viewers()
