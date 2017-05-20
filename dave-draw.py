@@ -9,6 +9,7 @@ class Viewer(object):
         twitch_name,
         beam_name,
         beam_id,
+        viewer_type,
         rank,
         points,
         points2,
@@ -27,6 +28,7 @@ class Viewer(object):
         self.twitch_name = twitch_name
         self.beam_name = beam_name
         self.beam_id = beam_id
+        self.viewer_type = viewer_type
         self.rank = rank
         self.points = points
         self.points2 = points2
@@ -209,7 +211,8 @@ class DaveDraw(object):
                         cur_viewer[13],
                         cur_viewer[14],
                         cur_viewer[15],
-                        cur_viewer[16]
+                        cur_viewer[16],
+                        cur_viewer[17]
                     )
                 )
 
