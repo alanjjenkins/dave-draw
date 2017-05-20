@@ -58,7 +58,7 @@ class Viewer(object):
 
 class DaveDraw(object):
     def __init__(self):
-        self.debug = True
+        self.debug = False
         self.database_path = 'Viewers3DB.sqlite'
         self.db_conn = sqlite3.connect(self.database_path)
         self.get_viewers()
