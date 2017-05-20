@@ -44,6 +44,11 @@ class DaveDraw(object):
         self.database_path = 'Viewers3DB.sqlite'
         self.db_conn = sqlite3.connect(self.database_path)
 
+    def get_random_viewer(self):
+        """
+        Gets a completely random viewer.
+        """
+        return random.choice(self.viewers)
     def get_viewers(self):
         """
         Gets data on all the viewers in the database and stores
@@ -83,6 +88,11 @@ class DaveDraw(object):
                     )
                 )
 
+    def display_random_viewer(self):
+        """
+        Displays random viewer.
+        """
+        self.display_viewer(self.get_random_viewer())
     def display_viewer(self, viewer):
         """
         Outputs the data on all viewers.
@@ -107,11 +117,6 @@ class DaveDraw(object):
                 viewer.entrance_sfx
             )
         )
-
-    def get_random_viewer(self):
-        return random.choice(self.viewers)
-    def display_random_viewer(self):
-        self.display_viewer(self.get_random_viewer())
 
 if __name__ == '__main__':
     dd = DaveDraw()
