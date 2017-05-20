@@ -83,7 +83,7 @@ class DaveDraw(object):
         for viewer in self.viewers:
             # skip anyone with no points
             if viewer.points2 == 0:
-                next
+                continue
 
             ticket_range_beg = latest_ticket + 1
             ticket_range_end = latest_ticket + 1 + viewer.points2
