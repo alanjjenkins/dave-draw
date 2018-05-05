@@ -187,7 +187,7 @@ class DaveDraw(object):
         viewers = c.execute('''
                 SELECT
 
-                viewer_id,
+                v_id,
                 TwitchName,
                 BeamName,
                 BeamID,
