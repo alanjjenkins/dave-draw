@@ -151,24 +151,14 @@ class DaveDraw(object):
         """
         Outputs the data on all viewers.
         """
-        print("""Viewer ID: %s\nTwitch Name: %s\nBeam Name: %s\nBeam ID: %s\nRank: %s\nPoints: %s\nPoints2: %s\nHours: %s\nRaids: %s\nGains Currency: %s\nGains Hours: %s\nInGiveaways: %s\nLastSeen: %s\nEntrance Message: %s\nEntranceMsgType: %s\nEntranceSFX: %s"""
+        print("""Twitch Name: %s\nRank: %s\nPoints: %s\nPoints2: %s\nHours: %s\nLastSeen: %s\n"""
             % (
-                viewer.viewer_id,
                 viewer.twitch_name,
-                viewer.beam_name,
-                viewer.beam_id,
                 viewer.rank,
                 viewer.points,
                 viewer.points2,
                 viewer.hours,
-                viewer.raids,
-                viewer.gains_currency,
-                viewer.gains_hours,
-                viewer.in_giveaways,
-                viewer.last_seen,
-                viewer.entrance_message,
-                viewer.entrance_message_type,
-                viewer.entrance_sfx
+                viewer.last_seen
             )
         )
 
