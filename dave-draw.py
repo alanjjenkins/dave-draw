@@ -3,46 +3,35 @@ import pdb
 import random
 import sqlite3
 
+
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
 class Viewer(object):
     def __init__(self,
-        viewer_id,
-        twitch_name,
-        beam_name,
-        beam_id,
-        viewer_type,
-        rank,
-        points,
-        points2,
-        hours,
-        raids,
-        gains_currency,
-        gains_hours,
-        in_giveaways,
-        last_seen,
-        sub,
-        entrance_message,
-        entrance_message_type,
-        entrance_sfx
-        ):
-
+                 viewer_id,
+                 twitch_name,
+                 viewer_type,
+                 rank,
+                 points,
+                 points2,
+                 hours,
+                 last_seen,
+                 sub
+                 ):
         self.viewer_id = viewer_id
         self.twitch_name = twitch_name
-        self.beam_name = beam_name
-        self.beam_id = beam_id
         self.viewer_type = viewer_type
         self.rank = rank
         self.points = points
         self.points2 = points2
         self.hours = hours
-        self.raids = raids
-        self.gains_currency = gains_currency
-        self.gains_hours = gains_hours
-        self.in_giveaways = in_giveaways
         self.last_seen = last_seen
         self.sub = sub
-        self.entrance_message = entrance_message
-        self.entrance_message_type = entrance_message_type
-        self.entrance_sfx = entrance_sfx
 
     def win_chance(self, total_tickets):
         """
@@ -55,6 +44,7 @@ class Viewer(object):
         percent = total_tickets / 100.00
 
         return self.points2 / percent
+
 
 class DaveDraw(object):
     def __init__(self):
@@ -81,8 +71,8 @@ class DaveDraw(object):
         latest_ticket = 0
 
         for viewer in self.viewers:
-            # skip anyone with no points
-            if viewer.points2 == 0:
+            # skip anyone with less than 500 points
+            if viewer.points2 <= 500:
                 continue
 
             ticket_range_beg = latest_ticket + 1
@@ -93,16 +83,18 @@ class DaveDraw(object):
 
             # assign a range of tickets:
             if self.debug:
-                print("Assigning viewer twitch: %s beam: %s tickets %i-%i" % (viewer.twitch_name, viewer.beam_name, viewer.tickets.start, viewer.tickets.stop))
+                print("Assigning viewer twitch: %s tickets %i-%i" % (viewer.twitch_name, viewer.tickets.start, viewer.tickets.stop))
             if ticket_range_beg == ticket_range_end:
                 if self.debug:
-                    print("Assigning ticket {} to {}".format(ticket_range_beg, viewer.twitch_name))
+                    print("Assigning ticket {} to {}".format(ticket_range_beg,
+                          viewer.twitch_name))
                 self.tickets[ticket_range_beg] = viewer
                 next
 
             for ticket in viewer.tickets:
                 if self.debug:
-                    print("Assigning ticket {} to {}".format(ticket, viewer.twitch_name))
+                    print("Assigning ticket {} to {}".format(ticket,
+                          viewer.twitch_name))
                 self.tickets[ticket] = viewer
 
     def calculate_total_points(self):
@@ -126,17 +118,19 @@ class DaveDraw(object):
         returns the user.
         """
 
-        ticket = random.randint(1, self.total_points)
+        ticket = random.randint(1, list(self.tickets.keys())[-1])
 
         try:
             winner = self.tickets[ticket]
         except:
             pdb.set_trace()
 
-        print("\n===== WINNER Twitch: {} / Beam: {} =====\n".format(winner.twitch_name, winner.beam_id))
+        print("\n===== WINNER {} =====\n".format(winner.twitch_name))
         print("Picked ticket {}\n".format(ticket))
-        print("Winner win chance: {:f}".format(winner.win_chance(self.total_points)))
-        print("Winner's ticket range: {}-{}".format(winner.tickets.start, winner.tickets.stop))
+        print("Winner win chance: {:f}".format(
+            winner.win_chance(self.total_points)))
+        print("Winner's ticket range: {}-{}".format(
+            winner.tickets.start, winner.tickets.stop))
         print("Winner's ticket amount: {}\n".format(winner.points2))
 
         self.display_viewer(winner)
@@ -152,15 +146,15 @@ class DaveDraw(object):
         Outputs the data on all viewers.
         """
         print("""Twitch Name: %s\nRank: %s\nPoints: %s\nPoints2: %s\nHours: %s\nLastSeen: %s\n"""
-            % (
-                viewer.twitch_name,
-                viewer.rank,
-                viewer.points,
-                viewer.points2,
-                viewer.hours,
-                viewer.last_seen
-            )
-        )
+              % (
+                    viewer.twitch_name,
+                    viewer.rank,
+                    viewer.points,
+                    viewer.points2,
+                    viewer.hours,
+                    viewer.last_seen
+                )
+              )
 
     def get_random_viewer(self):
         """
@@ -174,61 +168,47 @@ class DaveDraw(object):
         the data in self.viewers.
         """
         c = self.db_conn.cursor()
-        viewers = c.execute('''
+        c.row_factory = dict_factory
+
+        c.execute('''
                 SELECT
 
                 v_id,
                 TwitchName,
-                BeamName,
-                BeamID,
                 Type,
                 Rank,
                 Points,
                 Points2,
                 Hours,
-                Raids,
-                GainsCurrency,
-                GainsHours,
-                InGiveaways,
                 LastSeen,
-                Sub,
-                EntranceMessage,
-                EntranceMsgType,
-                EntranceSFX
+                Sub
 
                 FROM Viewer
                 WHERE Type != 1
                 AND TwitchName NOT IN (
                     \'treeboydave\',
-                    \'treebotdave\'
+                    \'treebotdave\',
+                    \'stay_hydrated_bot\'
                 );
-                ''').fetchall()
+                ''')
 
         self.viewers = []
 
-        for cur_viewer in viewers:
+        for cur_viewer in c:
             self.viewers.append(
                     Viewer(
-                        cur_viewer[0],
-                        cur_viewer[1],
-                        cur_viewer[2],
-                        cur_viewer[3],
-                        cur_viewer[4],
-                        cur_viewer[5],
-                        cur_viewer[6],
-                        cur_viewer[7],
-                        cur_viewer[8],
-                        cur_viewer[9],
-                        cur_viewer[10],
-                        cur_viewer[11],
-                        cur_viewer[12],
-                        cur_viewer[13],
-                        cur_viewer[14],
-                        cur_viewer[15],
-                        cur_viewer[16],
-                        cur_viewer[17]
+                        viewer_id=cur_viewer['v_id'],
+                        twitch_name=cur_viewer['TwitchName'],
+                        viewer_type=cur_viewer['Type'],
+                        rank=cur_viewer['Rank'],
+                        points=cur_viewer['Points'],
+                        points2=cur_viewer['Points2'],
+                        hours=cur_viewer['Hours'],
+                        last_seen=cur_viewer['LastSeen'],
+                        sub=cur_viewer['Sub']
                     )
                 )
+
 
 if __name__ == '__main__':
     dd = DaveDraw()
