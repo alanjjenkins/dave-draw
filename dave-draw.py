@@ -16,8 +16,6 @@ class Viewer(object):
                  viewer_id,
                  twitch_name,
                  viewer_type,
-                 rank,
-                 points,
                  points2,
                  hours,
                  last_seen,
@@ -26,8 +24,6 @@ class Viewer(object):
         self.viewer_id = viewer_id
         self.twitch_name = twitch_name
         self.viewer_type = viewer_type
-        self.rank = rank
-        self.points = points
         self.points2 = points2
         self.hours = hours
         self.last_seen = last_seen
@@ -145,11 +141,9 @@ class DaveDraw(object):
         """
         Outputs the data on all viewers.
         """
-        print("""Twitch Name: %s\nRank: %s\nPoints: %s\nPoints2: %s\nHours: %s\nLastSeen: %s\n"""
+        print("""Twitch Name: %s\n\nPoints: %s\nHours: %s\nLastSeen: %s\n"""
               % (
                     viewer.twitch_name,
-                    viewer.rank,
-                    viewer.points,
                     viewer.points2,
                     viewer.hours,
                     viewer.last_seen
@@ -176,8 +170,6 @@ class DaveDraw(object):
                 v_id,
                 TwitchName,
                 Type,
-                Rank,
-                Points,
                 Points2,
                 Hours,
                 LastSeen,
@@ -200,8 +192,6 @@ class DaveDraw(object):
                         viewer_id=cur_viewer['v_id'],
                         twitch_name=cur_viewer['TwitchName'],
                         viewer_type=cur_viewer['Type'],
-                        rank=cur_viewer['Rank'],
-                        points=cur_viewer['Points'],
                         points2=cur_viewer['Points2'],
                         hours=cur_viewer['Hours'],
                         last_seen=cur_viewer['LastSeen'],
